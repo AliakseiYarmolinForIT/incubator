@@ -138,7 +138,7 @@ app.put('/videos/:id', (req: Request<{id:string}, {}, {title: string, author: st
         });
     }
 
-    if (!req.body.publicationDate ||Date.parse(req.body.publicationDate) != Date.parse(req.body.publicationDate)) {
+    if (!req.body.publicationDate || typeof req.body.publicationDate !== 'string' ||Date.parse(req.body.publicationDate) != Date.parse(req.body.publicationDate)) {
         errorsMessage.errorsMessages.push({
             message: 'The publication date has incorrect values',
             field: 'publicationDate'
