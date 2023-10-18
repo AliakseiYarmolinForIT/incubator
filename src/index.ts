@@ -56,7 +56,7 @@ app.post('/videos', (req: Request<{},{},{title: string, author: string, availabl
             if (!availableResolutionsArray.includes(req.body.availableResolutions[i])) {
                 errorsMessage.errorsMessages.push({
                     message: 'The available resolution has incorrect values',
-                    field: 'Available resolution'
+                    field: 'availableResolutions'
                 });
             }
         }
@@ -92,7 +92,7 @@ app.get('/videos/:id', (req: Request<{id:string}>, res: Response<VideoType>) => 
     return res.sendStatus(404)
 })
 
-app.put('/videos/:id', (req: Request<{id:string}, {}, {title: string, author: string, availableResolutions: string[], canBeDownloaded: Boolean, minAgeRestriction: number, publicationDate: string}>, res: Response) => {
+app.put('/videos/:id', (req: Request<{id:string}, {}, {title: string, author: string, availableResolutions: string[], canBeDownloaded: boolean, minAgeRestriction: number, publicationDate: string}>, res: Response) => {
     let video = videos.find(p => p.id === +req.params.id)
     if(!video) {
         return res.sendStatus(404)
@@ -105,7 +105,7 @@ app.put('/videos/:id', (req: Request<{id:string}, {}, {title: string, author: st
         })
     }
 
-    if (!req.body.author || typeof req.body.author !== 'string' || req.body.title.length > 20 || !req.body.title.trim()) {
+    if (!req.body.author || typeof req.body.author !== 'string' || req.body.author.length > 20 || !req.body.author.trim()) {
         errorsMessage.errorsMessages.push({
             message: 'The author has incorrect values',
             field: 'author'
@@ -118,7 +118,7 @@ app.put('/videos/:id', (req: Request<{id:string}, {}, {title: string, author: st
             if (!availableResolutionsArray.includes(req.body.availableResolutions[i])) {
                 errorsMessage.errorsMessages.push({
                     message: 'The available resolution has incorrect values',
-                    field: 'Available resolution'
+                    field: 'availableResolutions'
                 });
             }
         }
@@ -127,21 +127,21 @@ app.put('/videos/:id', (req: Request<{id:string}, {}, {title: string, author: st
     if (!req.body.canBeDownloaded || typeof req.body.canBeDownloaded !== 'boolean') {
         errorsMessage.errorsMessages.push({
             message: 'The can be downloaded has incorrect values',
-            field: 'Can be downloaded'
+            field: 'canBeDownloaded'
         });
     }
 
     if (!req.body.minAgeRestriction || req.body.minAgeRestriction < 1 || req.body.minAgeRestriction > 18 ) {
         errorsMessage.errorsMessages.push({
             message: 'The min age restriction has incorrect values',
-            field: 'Min age restriction'
+            field: 'minAgeRestriction'
         });
     }
 
     if (!req.body.publicationDate ||Date.parse(req.body.publicationDate) != Date.parse(req.body.publicationDate)) {
         errorsMessage.errorsMessages.push({
             message: 'The publication date has incorrect values',
-            field: 'Publication date'
+            field: 'publicationDate'
         });
     }
 
@@ -155,8 +155,8 @@ app.put('/videos/:id', (req: Request<{id:string}, {}, {title: string, author: st
     video.title = req.body.title
     video.author = req.body.author
     video.availableResolutions = req.body.availableResolutions ?? ['P144']
-    video.canBeDownloaded = false
-    video.minAgeRestriction = null
+    video.canBeDownloaded = req.body.canBeDownloaded
+    video.minAgeRestriction = req.body.minAgeRestriction
     video.publicationDate = req.body.publicationDate
 
     return res.sendStatus(204)
